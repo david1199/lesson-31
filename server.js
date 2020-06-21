@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
@@ -22,6 +23,21 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
 }
+
+mongoose.connect("mongodb+srv://admin-david:9yciX!q8w@7k96D@cluster0-fhnuq.mongodb.net/wikiDB", {useNewUrlParser: true, useUnifiedTopology: true});
+
+const articleSchema = {
+  title: String,
+  content: String
+};
+
+const Article = mongoose.model("Article", articleSchema);
+
+app.get("/articles", function(req, res) {
+  Article.find(function(err, foundArticles){
+    res.send(foundArticles);
+  });
+});
 
 app.listen(port, error => {
   if (error) throw error;
